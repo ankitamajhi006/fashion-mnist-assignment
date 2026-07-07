@@ -20,20 +20,28 @@ nn = NeuralNetwork([784, 128, 64, 32, 10])
 optimizer = SGD(learning_rate=0.01)
 
 # Training Loop
+batch_size = 64
 epochs = 10
 
 for epoch in range(epochs):
 
-    # Forward pass
-    output = nn.forward(x_train[:5])
+    epoch_loss = 0
 
-    # Compute loss
-    loss = cross_entropy(y_train[:5], output)
+    for i in range(0, len(x_train), batch_size):
 
-    # Backward pass
-    nn.backward(y_train[:5])
+        X_batch = x_train[i:i+batch_size]
+        y_batch = y_train[i:i+batch_size]
 
-    # Update weights
-    optimizer.update(nn)
+        output = nn.forward(X_batch)
 
-    print(f"Epoch {epoch + 1}/{epochs} - Loss: {loss:.4f}")
+        loss = cross_entropy(y_batch, output)
+
+        nn.backward(y_batch)
+
+        optimizer.update(nn)
+
+        epoch_loss += loss
+
+    num_batches = len(x_train) // batch_size
+
+print(f"Epoch {epoch+1}/{epochs} - Loss: {epoch_loss / num_batches:.4f}")
