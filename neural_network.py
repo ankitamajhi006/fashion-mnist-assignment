@@ -1,28 +1,55 @@
 import numpy as np
+from activations import relu, softmax
 
 class NeuralNetwork:
 
-    def __init__(self, input_size, hidden_size, output_size):
+    def __init__(self, layer_sizes):
 
-        self.W1 = np.random.randn(input_size, hidden_size) * 0.01
-        self.b1 = np.zeros((1, hidden_size))
+        self.weights = []
+        self.biases = []
 
-        self.W2 = np.random.randn(hidden_size, output_size) * 0.01
-        self.b2 = np.zeros((1, output_size))
+        # Store values for backpropagation
+        self.activations = []
+        self.z_values = []
+        self.dW = []
+        self.db = []
 
-    def relu(self, x):
-        return np.maximum(0, x)
+        for i in range(len(layer_sizes) - 1):
 
-    def softmax(self, x):
-        exp_x = np.exp(x - np.max(x, axis=1, keepdims=True))
-        return exp_x / np.sum(exp_x, axis=1, keepdims=True)
+            W = np.random.randn(
+                layer_sizes[i],
+                layer_sizes[i + 1]
+            ) * np.sqrt(1.0 / layer_sizes[i])
+
+            b = np.zeros((1, layer_sizes[i + 1]))
+
+            self.weights.append(W)
+            self.biases.append(b)
 
     def forward(self, X):
 
-        self.Z1 = np.dot(X, self.W1) + self.b1
-        self.A1 = self.relu(self.Z1)
+        # Store input
+        self.activations = [X]
+        self.z_values = []
 
-        self.Z2 = np.dot(self.A1, self.W2) + self.b2
-        self.A2 = self.softmax(self.Z2)
+        A = X
 
-        return self.A2
+        # Hidden layers
+        for i in range(len(self.weights) - 1):
+
+            Z = np.dot(A, self.weights[i]) + self.biases[i]
+            self.z_values.append(Z)
+
+            A = relu(Z)
+            self.activations.append(A)
+
+        # Output layer
+        Z = np.dot(A, self.weights[-1]) + self.biases[-1]
+        self.z_values.append(Z)
+
+        output = softmax(Z)
+        self.activations.append(output)
+        def backward(self, y_true):
+        pass
+
+        return output
