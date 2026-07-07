@@ -1,4 +1,4 @@
-from optimizers import Momentum
+from optimizers import Nesterov
 from loss import cross_entropy
 from data_loader import load_data
 from neural_network import NeuralNetwork
@@ -17,7 +17,7 @@ y_test = one_hot(y_test)
 
 # Create neural network
 nn = NeuralNetwork([784, 128, 64, 32, 10])
-optimizer = Momentum(learning_rate=0.01)
+optimizer = Nesterov(learning_rate=0.01)
 
 # Training Loop
 batch_size = 64
