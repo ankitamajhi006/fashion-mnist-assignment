@@ -19,17 +19,21 @@ y_test = one_hot(y_test)
 nn = NeuralNetwork([784, 128, 64, 32, 10])
 optimizer = SGD(learning_rate=0.01)
 
-# Forward pass
-# Forward pass
-output = nn.forward(x_train[:5])
+# Training Loop
+epochs = 10
 
-# Calculate loss
-loss = cross_entropy(y_train[:5], output)
+for epoch in range(epochs):
 
-# Backward pass
-nn.backward(y_train[:5])
+    # Forward pass
+    output = nn.forward(x_train[:5])
 
-# Update weights
-optimizer.update(nn)
+    # Compute loss
+    loss = cross_entropy(y_train[:5], output)
 
-print("Loss:", loss)
+    # Backward pass
+    nn.backward(y_train[:5])
+
+    # Update weights
+    optimizer.update(nn)
+
+    print(f"Epoch {epoch + 1}/{epochs} - Loss: {loss:.4f}")
