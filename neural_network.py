@@ -8,9 +8,9 @@ class NeuralNetwork:
         self.weights = []
         self.biases = []
 
-        # Store values for backpropagation
         self.activations = []
         self.z_values = []
+
         self.dW = []
         self.db = []
 
@@ -28,7 +28,6 @@ class NeuralNetwork:
 
     def forward(self, X):
 
-        # Store input
         self.activations = [X]
         self.z_values = []
 
@@ -49,7 +48,33 @@ class NeuralNetwork:
 
         output = softmax(Z)
         self.activations.append(output)
-        def backward(self, y_true):
-        pass
 
         return output
+
+    def backward(self, y_true):
+
+        m = y_true.shape[0]
+
+        self.dW = []
+        self.db = []
+
+        # Output layer error
+        delta = self.activations[-1] - y_true
+
+        # Output layer gradients
+        dW = np.dot(self.activations[-2].T, delta) / m
+        db = np.sum(delta, axis=0, keepdims=True) / m
+
+        self.dW.insert(0, dW)
+        self.db.insert(0, db)
+
+        # Hidden layers
+        for i in range(len(self.weights) - 2, -1, -1):
+
+            delta = np.dot(delta, self.weights[i + 1].T) * (self.z_values[i] > 0)
+
+            dW = np.dot(self.activations[i].T, delta) / m
+            db = np.sum(delta, axis=0, keepdims=True) / m
+
+            self.dW.insert(0, dW)
+            self.db.insert(0, db)

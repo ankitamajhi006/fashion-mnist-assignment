@@ -1,3 +1,5 @@
+from optimizers import SGD
+from loss import cross_entropy
 from data_loader import load_data
 from neural_network import NeuralNetwork
 from utils import one_hot
@@ -15,9 +17,19 @@ y_test = one_hot(y_test)
 
 # Create neural network
 nn = NeuralNetwork([784, 128, 64, 32, 10])
+optimizer = SGD(learning_rate=0.01)
 
+# Forward pass
 # Forward pass
 output = nn.forward(x_train[:5])
 
-print("Output shape:", output.shape)
-print(output)
+# Calculate loss
+loss = cross_entropy(y_train[:5], output)
+
+# Backward pass
+nn.backward(y_train[:5])
+
+# Update weights
+optimizer.update(nn)
+
+print("Loss:", loss)
